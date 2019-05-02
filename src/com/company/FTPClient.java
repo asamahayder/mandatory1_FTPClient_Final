@@ -10,6 +10,14 @@ public class FTPClient
     private PrintStream    output           = null;
     private BufferedReader input            = null;
 
+    public FTPClient(String hostname, String username, String password) {
+        try {
+            getAccess(hostname,username,password);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String replyFromServer() throws IOException {
         while (true) {
             String reply = input.readLine();
@@ -38,7 +46,7 @@ public class FTPClient
         return replyFromServer();
     }
 
-    public void forbind(String hostname, String username, String password)throws IOException {
+    public void getAccess(String hostname, String username, String password)throws IOException {
         clientSocket                        = new Socket(hostname,21);
         output                              = new PrintStream(clientSocket.getOutputStream());
         input                               = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -54,7 +62,7 @@ public class FTPClient
         StringBuilder stringBuilder         = new StringBuilder();
         String nextString = dataInput.readLine();
         while (nextString != null) {
-            System.out.println("Server: "+nextString);
+            //System.out.println("Server: "+nextString);
             stringBuilder.append(nextString+"\n");
             nextString = dataInput.readLine();
         }
@@ -73,5 +81,42 @@ public class FTPClient
         dataOutPut.close();
         dataConnection.close();
         replyFromServer();
+    }
+
+    public void retrieveFile (String command, String fileName){
+        try {
+            String file = receiveText(command);
+            try (PrintWriter printWriter = new PrintWriter(System.getProperty("user.home") + "/Desktop/"+fileName)) {
+                printWriter.println(file);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readFile(String path){
+        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+            StringBuilder text = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                text.append(line);
+                text.append(System.lineSeparator());
+            }
+
+            String data = text.toString();
+            if (data.length() >= 1024) {
+                data = data.substring(0, 1024);
+            }
+            System.out.println("###########################################################################################");
+            System.out.println("#####################################Start#################################################");
+            System.out.println("###########################################################################################");
+            System.out.println(data);
+            System.out.println("###########################################################################################");
+            System.out.println("#######################################End#################################################");
+            System.out.println("###########################################################################################");
+            System.out.println(" ");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }
