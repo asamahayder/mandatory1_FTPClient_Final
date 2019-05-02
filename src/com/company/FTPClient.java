@@ -47,25 +47,29 @@ public class FTPClient
     }
 
     public void getAccess(String hostname, String username, String password)throws IOException {
-        clientSocket                        = new Socket(hostname,21);
-        output                              = new PrintStream(clientSocket.getOutputStream());
-        input                               = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        clientSocket                                                        = new Socket(hostname,21);
+        output                                                              = new PrintStream(clientSocket.getOutputStream());
+        input                                                               = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         replyFromServer();
         commandToServer("USER " + username);
         commandToServer("PASS " + password);
     }
 
     public String receiveText(String commandLine) throws IOException {
-        Socket dataConnection               = getDataConnection();
-        BufferedReader dataInput            = new BufferedReader(new InputStreamReader(dataConnection.getInputStream()));
+        Socket                              dataConnection                  = getDataConnection();
+        InputStream                         inputS                          = dataConnection.getInputStream();
+        InputStreamReader                   inputSR                         = new InputStreamReader(inputS);
+        BufferedReader                      buffR                           = new BufferedReader(inputSR);
         commandToServer(commandLine);
-        StringBuilder stringBuilder         = new StringBuilder();
-        String nextString = dataInput.readLine();
+        StringBuilder                       stringBuilder                   = new StringBuilder();
+        String                              nextString                      = buffR.readLine();
+
         while (nextString != null) {
             stringBuilder.append(nextString+"\n");
-            nextString = dataInput.readLine();
+            nextString = buffR.readLine();
         }
-        dataInput.close();
+
+        buffR.close();
         dataConnection.close();
         replyFromServer();
         return stringBuilder.toString();
