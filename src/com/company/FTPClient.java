@@ -62,7 +62,6 @@ public class FTPClient
         StringBuilder stringBuilder         = new StringBuilder();
         String nextString = dataInput.readLine();
         while (nextString != null) {
-            //System.out.println("Server: "+nextString);
             stringBuilder.append(nextString+"\n");
             nextString = dataInput.readLine();
         }
