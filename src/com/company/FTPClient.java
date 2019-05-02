@@ -30,8 +30,8 @@ public class FTPClient
     }
 
     private Socket getDataConnection() throws IOException {
-        String newSocketPortConnection      = commandToServer("PASV");
-        StringTokenizer stringToken         = new StringTokenizer(newSocketPortConnection, "(,)");
+        String                              newSocketPortConnection     = commandToServer("PASV");
+        StringTokenizer                     stringToken                 = new StringTokenizer(newSocketPortConnection, "(,)");
         if (stringToken.countTokens() < 7) throw new IOException("Not logged in...");
         stringToken.nextToken();
         stringToken.nextToken();
@@ -39,7 +39,7 @@ public class FTPClient
         stringToken.nextToken();
         stringToken.nextToken();
         int portNumber = 256*Integer.parseInt(stringToken.nextToken())+ Integer.parseInt(stringToken.nextToken());
-        Socket socket = new Socket(clientSocket.getInetAddress(),portNumber);
+        Socket                              socket                      = new Socket(clientSocket.getInetAddress(),portNumber);
         return socket;
     }
 
