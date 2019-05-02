@@ -46,7 +46,7 @@ public class FTPClient
         return replyFromServer();
     }
 
-    public void getAccess(String hostname, String username, String password)throws IOException {
+    public void getAccess(String hostname, String username, String password) throws IOException {
         clientSocket                                                        = new Socket(hostname,21);
         output                                                              = new PrintStream(clientSocket.getOutputStream());
         input                                                               = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -77,8 +77,9 @@ public class FTPClient
 
     public void uploadTextFile (String commandLine, String textLines) throws IOException
     {
-        Socket dataConnection               = getDataConnection();
-        PrintStream dataOutPut              = new PrintStream( dataConnection.getOutputStream() );
+        Socket                              dataConnection                  = getDataConnection();
+        OutputStream                        outputS                         = dataConnection.getOutputStream();
+        PrintStream                         dataOutPut                      = new PrintStream(outputS);
         commandToServer(commandLine);
         dataOutPut.print(textLines);
         dataOutPut.close();
