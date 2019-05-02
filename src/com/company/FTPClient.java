@@ -6,9 +6,10 @@ import java.util.*;
 
 public class FTPClient
 {
-    private Socket         clientSocket     = null;
-    private PrintStream    output           = null;
-    private BufferedReader input            = null;
+    private Socket            clientSocket     = null;
+    private PrintStream       output           = null;
+    private BufferedReader    input            = null;
+    private InputStreamReader isr              = null;
 
     public FTPClient(String hostname, String username, String password) {
         try {
@@ -33,10 +34,13 @@ public class FTPClient
         StringTokenizer stringToken         = new StringTokenizer(newSocketPortConnection, "(,)");
         if (stringToken.countTokens() < 7) throw new IOException("Not logged in...");
         stringToken.nextToken();
-        stringToken.nextToken(); stringToken.nextToken(); stringToken.nextToken(); stringToken.nextToken();
-        int portNumber = 256*Integer.parseInt(stringToken.nextToken())
-                + Integer.parseInt(stringToken.nextToken());
-        return new Socket(clientSocket.getInetAddress(), portNumber);
+        stringToken.nextToken();
+        stringToken.nextToken();
+        stringToken.nextToken();
+        stringToken.nextToken();
+        int portNumber = 256*Integer.parseInt(stringToken.nextToken())+ Integer.parseInt(stringToken.nextToken());
+        Socket socket = new Socket(clientSocket.getInetAddress(),portNumber);
+        return socket;
     }
 
     public String commandToServer(String commandLine) throws IOException {
@@ -46,10 +50,11 @@ public class FTPClient
         return replyFromServer();
     }
 
-    public void getAccess(String hostname, String username, String password) throws IOException {
+    public void getAccess(String hostname, String username, String password)throws IOException {
         clientSocket                                                        = new Socket(hostname,21);
         output                                                              = new PrintStream(clientSocket.getOutputStream());
-        input                                                               = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        isr                                                                 = new InputStreamReader(clientSocket.getInputStream());
+        input                                                               = new BufferedReader(isr);
         replyFromServer();
         commandToServer("USER " + username);
         commandToServer("PASS " + password);
