@@ -9,24 +9,29 @@ import java.io.*;
 public class Main {
 
     public static void main(String[] args) {
-        try {
+        //try {
             //ESTABLISHING CONNECTION AND LOGIN
-            FTPClient client = new FTPClient("ftp.cs.brown.edu","anonymous","password");
+//            FTPClient client = new FTPClient("ftp.cs.brown.edu","anonymous","password");
+            FTPClient client = new FTPClient("192.168.24.3","anonymous","password");
 
             //DOWNLOADING FILES TO DESKTOP
-            client.retrieveFile("RETR pub/gp/readme.txt","file1.txt");
-            client.retrieveFile("RETR pub/alt.quotations/README","file2.txt"); //the second parameter
+//            client.retrieveFile("RETR pub/gp/readme.txt","file1.txt");
+            //client.receiveText("LIST");
+            client.retrieveFile("RETR /home/share/kek.txt","kek.txt");
+
+            // client.retrieveFile("RETR pub/alt.quotations/README","file2.txt"); //the second parameter
 
             //READING FILES
-            client.readFile(System.getProperty("user.home") + "/Desktop/file1.txt");
-            client.readFile(System.getProperty("user.home") + "/Desktop/file2.txt");
+            //client.readFile(System.getProperty("user.home") + "/Desktop/file1.txt");
+           // client.readFile(System.getProperty("user.home") + "/Desktop/file2.txt");
 
             //UPLOADING
             String message = "This is a testfile for a FTPClient";
-            client.uploadTextFile("STOR incoming/testfilnummer1.txt", message);
+           // client.uploadTextFile("STOR incoming/testfilnummer1.txt", message);
+            //client.uploadTextFile("STOR /home/share/tingeling.txt", message);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+       // }
     }
 }
