@@ -6,10 +6,10 @@ import java.util.*;
 
 public class FTPClient
 {
-    private Socket            clientSocket     = null;
-    private PrintStream       output           = null;
-    private BufferedReader    input            = null;
-    private InputStreamReader isr              = null;
+    private Socket                          clientSocket                    = null;
+    private PrintStream                     output                          = null;
+    private BufferedReader                  input                           = null;
+    private InputStreamReader               isr                             = null;
 
     public FTPClient(String hostname, String username, String password) {
         try {
@@ -21,7 +21,7 @@ public class FTPClient
 
     private String replyFromServer() throws IOException {
         while (true) {
-            String reply = input.readLine();
+            String                          reply                           = input.readLine();
             System.out.println("Server: " + reply);
             if (reply.length() >= 3 && reply.charAt(3) != '-' && Character.isDigit(reply.charAt(0))
                     && Character.isDigit(reply.charAt(1)) && Character.isDigit(reply.charAt(2)))
@@ -30,8 +30,8 @@ public class FTPClient
     }
 
     private Socket getDataConnection() throws IOException {
-        String newSocketPortConnection      = commandToServer("PASV");
-        StringTokenizer stringToken         = new StringTokenizer(newSocketPortConnection, "(,)");
+        String                              newSocketPortConnection         = commandToServer("PASV");
+        StringTokenizer                     stringToken                     = new StringTokenizer(newSocketPortConnection, "(,)");
         if (stringToken.countTokens() < 7) throw new IOException("Not logged in...");
         stringToken.nextToken();
         stringToken.nextToken();
@@ -39,7 +39,7 @@ public class FTPClient
         stringToken.nextToken();
         stringToken.nextToken();
         int portNumber = 256*Integer.parseInt(stringToken.nextToken())+ Integer.parseInt(stringToken.nextToken());
-        Socket socket = new Socket(clientSocket.getInetAddress(),portNumber);
+        Socket                              socket                          = new Socket(clientSocket.getInetAddress(),portNumber);
         return socket;
     }
 
@@ -94,7 +94,7 @@ public class FTPClient
 
     public void retrieveFile (String command, String fileName){
         try {
-            String file = receiveText(command);
+            String                          file                            = receiveText(command);
             try (PrintWriter printWriter = new PrintWriter(System.getProperty("user.home") + "/Desktop/"+fileName)) {
                 printWriter.println(file);
             }
@@ -105,14 +105,14 @@ public class FTPClient
 
     public void readFile(String path){
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
-            StringBuilder text = new StringBuilder();
-            String line;
+            StringBuilder                   text                            = new StringBuilder();
+            String                          line;
             while ((line = bufferedReader.readLine()) != null) {
                 text.append(line);
                 text.append(System.lineSeparator());
             }
 
-            String data = text.toString();
+            String                          data                            = text.toString();
             if (data.length() >= 1024) {
                 data = data.substring(0, 1024);
             }
